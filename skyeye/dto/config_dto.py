@@ -14,7 +14,7 @@ class ScanVO:
     @classmethod
     def from_json(cls, json_map=None):
         if json_map is not None:
-            return ScanVO(class_name=json_map["className"],
-                         method_name=json_map["methodName"])
+            return ScanVO(class_name=json_map.get("className"),
+                         method_name=json_map.get("methodName"))
         return ScanVO()
 

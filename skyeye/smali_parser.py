@@ -77,7 +77,7 @@ class SmaliParser:
             # 执行方法的类包含扫描的类&& 不包括自生的调用
             if(targetClass in invokeClass and matcherCallerInfo.class_name not in invokeClass):
                 # 匹配所有调用到目标类的invoke line
-                if(len(targetMethod) == 0):
+                if(targetMethod == None or len(targetMethod) == 0):
                     matcherCallerInfo.invoke_class = targetClass
                     matcherCallerInfo.invoke_func = invokeMethod
                     return True

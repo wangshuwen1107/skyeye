@@ -8,6 +8,7 @@ import shutil
 from skyeye.config_center import ConfigCenter
 from skyeye.result_wirter import ResultWirter
 from skyeye.smali_parser import SmaliParser
+import threading
 
 def startScan(apkPath,configYamlPath,resultDir):
     # 初始化配置
@@ -22,9 +23,10 @@ def startScan(apkPath,configYamlPath,resultDir):
     if  not scanSmalis(ConfigCenter.scan_config) :
         delAllTempFiles()
         return
-    delAllTempFiles()
     resultJsonFilePath = ResultWirter.shared().wirte(resultDir)
     print("✅ 扫描结果: "+resultJsonFilePath)
+    delAllTempFiles()
+
     
 def scanSmalis(scan_strategy_list):
     print("🚀 开始扫描...")
@@ -44,7 +46,7 @@ def scanSmalis(scan_strategy_list):
 #  将dex转换成smail           
 def toSmail(dexList):
     startTime = int(time.time())
-    print("🚀 换成smail...")
+    print("🚀 换成smali...")
     current_file_dir = os.path.dirname(__file__)
     outputSmaliDirPath = os.path.join(os.getcwd(),'out/smali')
     if os.path.isdir(outputSmaliDirPath) == True:
