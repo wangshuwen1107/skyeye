@@ -10,9 +10,10 @@ skyeye是一款基于python3实现的扫描APK中代码引用的CLI工具
 
 #### pythonCli环境配置
 -  zsh
-在.zshrc中增加以下配置 export PATH="~/Library/Python/3.8/bin:$PATH"
+在.zshrc中增加以下配置 export PATH="/Users/{yourHostName}/Library/Python/3.8/bin:$PATH"
 - bash
-在.bash_profile中增加以下配置 export PATH="~/Library/Python/3.8/bin:$PATH"
+在.bash_profile中增加以下配置 export PATH="/Users/{yourHostName}/Library/Python/3.8/bin:$PATH"
+
 
 ### 使用
 #### 扫描APK中代码引用
@@ -34,11 +35,11 @@ skyeye是一款基于python3实现的扫描APK中代码引用的CLI工具
 ```bash
     skyeye scan
       -i , --input       输入扫描的APK路径
-      -o , --output      输出结果的文件夹路径 【可选，默认运行文件夹路径】
       -c , --config      扫描配置yaml文件路径
+      -o , --output      输出结果的文件夹路径 【可选，默认运行文件夹路径】
 ```
 
-3. 结果报告
+3. 输出结果，格式如下
 ```json
 {
     "com.test.Class:testMethod(Landroid.content.Context;)Ljava.lang.String;": [
@@ -57,6 +58,8 @@ skyeye -v
 ```
 
 ### changeLog
+####  3.0.1
+- 增加PyYaml的依赖
 ####  3.0.0
 - 扫描特定类的所有方法外部的引用
 - 扫描特定类的特定方法的外部引用

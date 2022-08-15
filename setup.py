@@ -22,7 +22,8 @@ setup(name='skyeye',
       include_package_data=True,
       zip_safe=True,
       install_requires=[
-        'requests'
+        'requests',
+        'PyYaml'
       ],
       entry_points={
         'console_scripts':[
