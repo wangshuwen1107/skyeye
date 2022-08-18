@@ -8,7 +8,6 @@ import shutil
 from skyeye.config_center import ConfigCenter
 from skyeye.result_wirter import ResultWirter
 from skyeye.smali_parser import SmaliParser
-import threading
 
 def startScan(apkPath,configYamlPath,resultDir):
     # 初始化配置
@@ -18,6 +17,8 @@ def startScan(apkPath,configYamlPath,resultDir):
         print("请配置扫描策略")
         return
     ResultWirter.initialize()
+    # 清除之前可能遗留的临时文件
+    delAllTempFiles()
     dexList = getDexFileList(apkPath)
     toSmail(dexList)
     if  not scanSmalis(ConfigCenter.scan_config) :
