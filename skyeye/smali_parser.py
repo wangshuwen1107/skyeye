@@ -17,22 +17,26 @@ class SmaliParser:
         methodBlock = False
         matcherCallerInfo:CallerInfo = None
         for line in lines:
+            # 解析调用类
             if(line.startswith('.class')):
                 className = line[line.index('L')+1:line.index(";")].replace("/",".")
-            
             # 解析调用方法
             if(line.startswith('.method') | methodBlock):
                 if(line.startswith('.method')):
                     matcherCallerInfo = SmaliParser.parseCallMehtodInfo(line,className)
                     methodBlock = True
-                 # 解析调用方法执行的函数
-                if(SmaliParser.matchInvokeLine(matcherCallerInfo,line,scan_strategy_list)):
+                # 解析调用方法执行的行数（匹配到了执行方法结束lineNum赋值)
+                startLineNum = SmaliParser.parseInvokeNum(line)
+                if(startLineNum and len(matcherCallerInfo.invoke_class) == 0):
+                   matcherCallerInfo.invoke_num = startLineNum
+                # 解析调用方法执行的函数
+                if(matcherCallerInfo and SmaliParser.matchInvokeLine(matcherCallerInfo,line,scan_strategy_list)):
                     resultLine ='{a}:{b} 调用: {c}:{d}'.format(a=matcherCallerInfo.class_name,
                                                   b=matcherCallerInfo.method_name,
                                                   c = matcherCallerInfo.invoke_class,
                                                   d=matcherCallerInfo.invoke_func)
                     ResultWirter.shared().addResultDto(matcherCallerInfo)
-                    # print("扫描到了"+resultLine)
+                    # print("😄😄😄😄扫描到了"+resultLine)
             # 解析调用方法结束
             if(line.startswith('.end method')):
                 methodBlock = False
@@ -54,6 +58,14 @@ class SmaliParser:
         return callerInfo
 
     @classmethod
+    def parseInvokeNum(cls,line:str)->str:
+        lineStrip = line.strip()
+        if(not lineStrip.startswith('.line')):
+            return None
+        lineNumStr = lineStrip[5:]
+        return lineNumStr
+
+    @classmethod
     def matchInvokeLine(cls,matcherCallerInfo:CallerInfo,line:str,scan_strategy_list=[]):
         lineStrip = line.strip()
         if(not lineStrip.startswith('invoke')):
@@ -62,13 +74,13 @@ class SmaliParser:
         # 解析完成之后 invokeClass = java.lang.Runtime
         classMatch = re.compile(r"},{1}\s\S+;->{1}").search(lineStrip)
         if not classMatch:
-            return
+            return False
         tempClassStr = classMatch.group()
         invokeClass = tempClassStr[4:len(tempClassStr)-3].replace('/','.')
         #解析完成之后 invokeMethod = getRuntime()
         methodMatch = re.compile(r"->{1}[\s\S]+").search(lineStrip)
         if not methodMatch:
-            return
+            return False
         invokeMethod = methodMatch.group()[2:].replace('/','.')
         # print ("matchInvokeLine invokeClass="+invokeClass+" invokeMethod="+invokeMethod)
         for strategy in scan_strategy_list:

@@ -30,7 +30,7 @@ def startScan(apkPath,configYamlPath,resultDir):
 
     
 def scanSmalis(scan_strategy_list):
-    print("🚀 开始扫描...")
+    print("🚀 开始扫描,过程大概持续2分钟...")
     startTime = int(time.time())
     outputSmaliDirPath = os.path.join(os.getcwd(),'out/smali')
     if not os.path.isdir(outputSmaliDirPath):
@@ -47,7 +47,7 @@ def scanSmalis(scan_strategy_list):
 #  将dex转换成smail           
 def toSmail(dexList):
     startTime = int(time.time())
-    print("🚀 换成smali...")
+    print("🚀 换成smali,过程大概持续2分钟...")
     current_file_dir = os.path.dirname(__file__)
     outputSmaliDirPath = os.path.join(os.getcwd(),'out/smali')
     if os.path.isdir(outputSmaliDirPath) == True:
