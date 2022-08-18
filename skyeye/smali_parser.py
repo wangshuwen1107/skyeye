@@ -3,7 +3,7 @@ from turtle import st
 from skyeye.dto import *
 import re
 from skyeye.result_wirter import ResultWirter
-
+import copy
 class SmaliParser:
 
     @classmethod
@@ -25,18 +25,23 @@ class SmaliParser:
                 if(line.startswith('.method')):
                     matcherCallerInfo = SmaliParser.parseCallMehtodInfo(line,className)
                     methodBlock = True
-                # 解析调用方法执行的行数（匹配到了执行方法结束lineNum赋值)
+                # 解析调用方法执行的行数（匹配到了方法->结束赋值)
                 startLineNum = SmaliParser.parseInvokeNum(line)
                 if(startLineNum and len(matcherCallerInfo.invoke_class) == 0):
                    matcherCallerInfo.invoke_num = startLineNum
                 # 解析调用方法执行的函数
-                if(matcherCallerInfo and SmaliParser.matchInvokeLine(matcherCallerInfo,line,scan_strategy_list)):
-                    resultLine ='{a}:{b} 调用: {c}:{d}'.format(a=matcherCallerInfo.class_name,
-                                                  b=matcherCallerInfo.method_name,
-                                                  c = matcherCallerInfo.invoke_class,
-                                                  d=matcherCallerInfo.invoke_func)
-                    ResultWirter.shared().addResultDto(matcherCallerInfo)
-                    # print("😄😄😄😄扫描到了"+resultLine)
+                copyCallerInfo = SmaliParser.matchInvokeLine(matcherCallerInfo,line,scan_strategy_list)
+                if(copyCallerInfo):
+                    resultLine ='行数={e} {a}:{b} 调用: {c}:{d}'.format(a=copyCallerInfo.class_name,
+                                                  b=copyCallerInfo.method_name,
+                                                  c = copyCallerInfo.invoke_class,
+                                                  d=copyCallerInfo.invoke_func,
+                                                  e=copyCallerInfo.invoke_num)
+                    matcherCallerInfo.invoke_class = ""
+                    matcherCallerInfo.invoke_func = ""
+                    matcherCallerInfo.invoke_num = ""
+                    ResultWirter.shared().addResultDto(copyCallerInfo)
+                    # print("😄😄😄扫描到了"+resultLine)
             # 解析调用方法结束
             if(line.startswith('.end method')):
                 methodBlock = False
@@ -66,21 +71,23 @@ class SmaliParser:
         return lineNumStr
 
     @classmethod
-    def matchInvokeLine(cls,matcherCallerInfo:CallerInfo,line:str,scan_strategy_list=[]):
+    def matchInvokeLine(cls,matcherCallerInfo:CallerInfo,line:str,scan_strategy_list=[])->CallerInfo:
+        if None == matcherCallerInfo:
+            return None
         lineStrip = line.strip()
         if(not lineStrip.startswith('invoke')):
-            return False
+            return None
         # invoke-static {}, Ljava/lang/Runtime;->getRuntime()Ljava/lang/Runtime;
         # 解析完成之后 invokeClass = java.lang.Runtime
         classMatch = re.compile(r"},{1}\s\S+;->{1}").search(lineStrip)
         if not classMatch:
-            return False
+            return None
         tempClassStr = classMatch.group()
         invokeClass = tempClassStr[4:len(tempClassStr)-3].replace('/','.')
         #解析完成之后 invokeMethod = getRuntime()
         methodMatch = re.compile(r"->{1}[\s\S]+").search(lineStrip)
         if not methodMatch:
-            return False
+            return None
         invokeMethod = methodMatch.group()[2:].replace('/','.')
         # print ("matchInvokeLine invokeClass="+invokeClass+" invokeMethod="+invokeMethod)
         for strategy in scan_strategy_list:
@@ -92,13 +99,15 @@ class SmaliParser:
                 if(targetMethod == None or len(targetMethod) == 0):
                     matcherCallerInfo.invoke_class = targetClass
                     matcherCallerInfo.invoke_func = invokeMethod
-                    return True
+                    return copy.copy(matcherCallerInfo)
                 # 匹配调用到目标类和目标方法的invoke line
                 if(targetMethod in invokeMethod):
                     matcherCallerInfo.invoke_class = targetClass
                     matcherCallerInfo.invoke_func = targetMethod
-                    return True
-        return False
+                    return copy.copy(matcherCallerInfo)
+        return None
+
+        
         
         
         

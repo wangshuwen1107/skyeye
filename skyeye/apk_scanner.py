@@ -18,15 +18,15 @@ def startScan(apkPath,configYamlPath,resultDir):
         return
     ResultWirter.initialize()
     # 清除之前可能遗留的临时文件
-    delAllTempFiles()
-    dexList = getDexFileList(apkPath)
-    toSmail(dexList)
+    # delAllTempFiles()
+    # dexList = getDexFileList(apkPath)
+    # toSmail(dexList)
     if  not scanSmalis(ConfigCenter.scan_config) :
-        delAllTempFiles()
+        # delAllTempFiles()
         return
     resultJsonFilePath = ResultWirter.shared().wirte(resultDir)
     print("✅ 扫描结果: "+resultJsonFilePath)
-    delAllTempFiles()
+    # delAllTempFiles()
 
     
 def scanSmalis(scan_strategy_list):
