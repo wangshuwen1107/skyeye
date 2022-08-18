@@ -85,9 +85,10 @@ def getDexFileList(apkPath):
 
 def delAllTempFiles():
     startTime = int(time.time())
-    print("🚀 删除临时文件夹...")
     outputDirPath = os.path.join(os.getcwd(),"out")
     if os.path.exists(outputDirPath):
+       print("🚀 删除临时文件夹"+outputDirPath+" ...")
        shutil.rmtree(outputDirPath)
-    delDirTimes = int(time.time()) - startTime
-    print("✅ 删除临时文件夹"+str(delDirTimes)+"s")
+       delDirTimes = int(time.time()) - startTime
+       print("✅ 删除临时文件夹"+str(delDirTimes)+"s")
+  
