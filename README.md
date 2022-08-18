@@ -45,7 +45,8 @@ skyeye是一款基于python3实现的扫描APK中代码引用的CLI工具
     "com.test.Class:testMethod(Landroid.content.Context;)Ljava.lang.String;": [
         {
             "class_name": "com.test.CallerClassName",
-            "method_name": "private final CallerFuncName()V"
+            "method_name": "private final CallerFuncName()V",
+            "invoke_num": " 45"
         }   
     ]
 }
@@ -58,7 +59,8 @@ skyeye -v
 ```
 
 ### changeLog
-####  3.0.1
+####  3.1.0
+- 增加结果报告执行函数输出
 - 增加PyYaml的依赖
 ####  3.0.0
 - 扫描特定类的所有方法外部的引用
