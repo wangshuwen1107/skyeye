@@ -10,9 +10,9 @@ skyeye是一款基于python3实现的扫描APK中代码引用的CLI工具
 
 #### pythonCli环境配置
 -  zsh
-在.zshrc中增加以下配置 export PATH="/Users/{yourHostName}/Library/Python/3.8/bin:$PATH"
+在.zshrc中增加以下配置 export PATH="~/Library/Python/3.8/bin:$PATH"
 - bash
-在.bash_profile中增加以下配置 export PATH="/Users/{yourHostName}/Library/Python/3.8/bin:$PATH"
+在.bash_profile中增加以下配置 export PATH="~/Library/Python/3.8/bin:$PATH"
 
 
 ### 使用
