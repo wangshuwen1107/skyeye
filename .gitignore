@@ -3,3 +3,4 @@ skyeye.egg-info/
 build/
 **/__pycache__/
 test/
+out/
