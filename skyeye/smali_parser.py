@@ -1,5 +1,4 @@
 # coding=UTF-8
-from turtle import st
 from skyeye.dto import *
 import re
 from skyeye.result_wirter import ResultWirter
@@ -27,6 +26,8 @@ class SmaliParser:
                     methodBlock = True
                 # 解析调用方法执行的行数（匹配到了方法->结束赋值)
                 startLineNum = SmaliParser.parseInvokeNum(line)
+                
+                
                 if(startLineNum and len(matcherCallerInfo.invoke_class) == 0):
                    matcherCallerInfo.invoke_num = startLineNum
                 # 解析调用方法执行的函数
@@ -49,9 +50,9 @@ class SmaliParser:
         smaliFile.close()
         # print("扫描类 "+className)
        
- 
+    #调用者函数
     @classmethod
-    def parseCallMehtodInfo(cls,startMethodLine='',className=''):
+    def parseCallMehtodInfo(cls,startMethodLine='',className='')->CallerInfo:
         callerInfo = CallerInfo()
         calllMehotdInfoList = startMethodLine.split(' ')
         methodDsec = ''
