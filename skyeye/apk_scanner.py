@@ -4,9 +4,9 @@ import sys
 import zipfile
 import time
 import shutil
-from skyeye.config_center import ConfigCenter
+from skyeye.config import ConfigCenter
 from skyeye.result_wirter import ResultWirter
-from skyeye.smali_parser import SmaliParser
+from skyeye.parse import SmaliParser
 
 def startScan(apkPath,configYamlPath,resultDir):
     # 初始化配置
