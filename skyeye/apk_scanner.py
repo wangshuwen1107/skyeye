@@ -1,7 +1,6 @@
 # coding=UTF-8
 import os
 import sys
-from turtle import st
 import zipfile
 import time
 import shutil
