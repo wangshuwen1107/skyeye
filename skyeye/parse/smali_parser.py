@@ -1,10 +1,11 @@
 # coding=UTF-8
 from skyeye.dto import *
-import re
 from skyeye.result_wirter import ResultWirter
-import copy
+from .invokeline_parser import InvokeLineParser
+
 class SmaliParser:
 
+    #扫描单个类文件
     @classmethod
     def scanSingleSmali(cls,smaliFilePath='',scan_strategy_list=[]): 
         if(smaliFilePath.endswith(".smali") == False):
@@ -19,37 +20,36 @@ class SmaliParser:
             # 解析调用类
             if(line.startswith('.class')):
                 className = line[line.index('L')+1:line.index(";")].replace("/",".")
+                continue
             # 解析调用方法
-            if(line.startswith('.method') | methodBlock):
-                if(line.startswith('.method')):
-                    matcherCallerInfo = SmaliParser.parseCallMehtodInfo(line,className)
-                    methodBlock = True
-                # 解析调用方法执行的行数（匹配到了方法->结束赋值)
-                startLineNum = SmaliParser.parseInvokeNum(line)
+            if(line.startswith('.method')):
+                 matcherCallerInfo = SmaliParser.parseCallMehtodInfo(line,className)
+                 methodBlock = True
+                 continue
+             
+            if(methodBlock):
+                if(line.strip().startswith('.line')):
+                    matcherCallerInfo.invoke_num = SmaliParser.parseInvokeNum(line)
+                    continue
+                    
+                # 扫描调用方法里面 执行的方法  1.执行的方法 2.成员变量赋值的方法
+                copyCallerInfo = InvokeLineParser.matchInvokeLine(matcherCallerInfo,line,scan_strategy_list)
+                # TODO 匹配调用方法里面 变量，枚举，引用的常量
                 
-                
-                if(startLineNum and len(matcherCallerInfo.invoke_class) == 0):
-                   matcherCallerInfo.invoke_num = startLineNum
-                # 解析调用方法执行的函数
-                copyCallerInfo = SmaliParser.matchInvokeLine(matcherCallerInfo,line,scan_strategy_list)
                 if(copyCallerInfo):
-                    resultLine ='行数={e} {a}:{b} 调用: {c}:{d}'.format(a=copyCallerInfo.class_name,
-                                                  b=copyCallerInfo.method_name,
-                                                  c = copyCallerInfo.invoke_class,
-                                                  d=copyCallerInfo.invoke_func,
-                                                  e=copyCallerInfo.invoke_num)
-                    matcherCallerInfo.invoke_class = ""
-                    matcherCallerInfo.invoke_func = ""
-                    matcherCallerInfo.invoke_num = ""
+                    SmaliParser.toStringScanInfo(copyCallerInfo)
+                    matcherCallerInfo.invoke_class = None
+                    matcherCallerInfo.invoke_func = None
+                    matcherCallerInfo.invoke_num = None
                     ResultWirter.shared().addResultDto(copyCallerInfo)
-                    # print("😄😄😄扫描到了"+resultLine)
             # 解析调用方法结束
             if(line.startswith('.end method')):
                 methodBlock = False
                 matcherCallerInfo = None
         smaliFile.close()
         # print("扫描类 "+className)
-       
+        
+
     #调用者函数
     @classmethod
     def parseCallMehtodInfo(cls,startMethodLine='',className='')->CallerInfo:
@@ -63,51 +63,31 @@ class SmaliParser:
         callerInfo.method_name = methodDsec.strip()
         return callerInfo
 
+
+    #调用者执行的行数
     @classmethod
     def parseInvokeNum(cls,line:str)->str:
         lineStrip = line.strip()
-        if(not lineStrip.startswith('.line')):
-            return None
         lineNumStr = lineStrip[5:]
         return lineNumStr
 
-    @classmethod
-    def matchInvokeLine(cls,matcherCallerInfo:CallerInfo,line:str,scan_strategy_list=[])->CallerInfo:
-        if None == matcherCallerInfo:
-            return None
-        lineStrip = line.strip()
-        if(not lineStrip.startswith('invoke')):
-            return None
-        # invoke-static {}, Ljava/lang/Runtime;->getRuntime()Ljava/lang/Runtime;
-        # 解析完成之后 invokeClass = java.lang.Runtime
-        classMatch = re.compile(r"},{1}\s\S+;->{1}").search(lineStrip)
-        if not classMatch:
-            return None
-        tempClassStr = classMatch.group()
-        invokeClass = tempClassStr[4:len(tempClassStr)-3].replace('/','.')
-        #解析完成之后 invokeMethod = getRuntime()
-        methodMatch = re.compile(r"->{1}[\s\S]+").search(lineStrip)
-        if not methodMatch:
-            return None
-        invokeMethod = methodMatch.group()[2:].replace('/','.')
-        # print ("matchInvokeLine invokeClass="+invokeClass+" invokeMethod="+invokeMethod)
-        for strategy in scan_strategy_list:
-            targetClass = strategy.class_name
-            targetMethod = strategy.method_name
-            # 执行方法的类包含扫描的类&& 不包括自生的调用
-            if(targetClass in invokeClass and matcherCallerInfo.class_name not in invokeClass):
-                # 匹配所有调用到目标类的invoke line
-                if(targetMethod == None or len(targetMethod) == 0):
-                    matcherCallerInfo.invoke_class = targetClass
-                    matcherCallerInfo.invoke_func = invokeMethod
-                    return copy.copy(matcherCallerInfo)
-                # 匹配调用到目标类和目标方法的invoke line
-                if(targetMethod in invokeMethod):
-                    matcherCallerInfo.invoke_class = targetClass
-                    matcherCallerInfo.invoke_func = targetMethod
-                    return copy.copy(matcherCallerInfo)
-        return None
 
+    @classmethod
+    def toStringScanInfo(cls,copyCallerInfo:CallerInfo)->str:
+        resultLine = ''
+        if len(copyCallerInfo.invoke_func) > 0:
+            resultLine ='行数={e} {a}:{b} 调用: {c}:{d}'.format(a=copyCallerInfo.class_name,
+                                b=copyCallerInfo.method_name,
+                                c=copyCallerInfo.invoke_class,
+                                d=copyCallerInfo.invoke_func,
+                                e=copyCallerInfo.invoke_num)
+        else:
+            resultLine ='行数={e} {a}:{b} 调用: {c}.{d}'.format(a=copyCallerInfo.class_name,
+                    b=copyCallerInfo.method_name,
+                    c=copyCallerInfo.invoke_class,
+                    d=copyCallerInfo.ref_filed,
+                    e=copyCallerInfo.invoke_num) 
+        print("😄😄😄扫描到了"+resultLine)
         
         
         
