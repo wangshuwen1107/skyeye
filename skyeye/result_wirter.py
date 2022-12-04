@@ -1,10 +1,12 @@
 # coding=UTF-8
 import os
 from skyeye.dto import *
+from skyeye.utils import *
 import json
+
 class ResultWirter:
     
-    callerInfoList = []
+    callerInfoList = [CallerInfo]
     
     callerResultMap = {}
     
@@ -39,10 +41,10 @@ class ResultWirter:
     def groupCaller(self):
         for callerInfo in self.callerInfoList:
             key = ''
-            if(len(callerInfo.invoke_func)>0):
-                key ='{a}:{b}'.format(a=callerInfo.invoke_class, b=callerInfo.invoke_func)
-            elif(len(callerInfo.ref_filed)>0):
-                key ='{a}.{b}'.format(a=callerInfo.invoke_class, b=callerInfo.ref_filed)
+            if(not isEmpty(callerInfo.target_method)):
+                key ='{a}:{b}'.format(a=callerInfo.target_class, b=callerInfo.target_method)
+            elif(not isEmpty(callerInfo.target_ref_filed)):
+                key ='{a}.{b}'.format(a=callerInfo.target_class, b=callerInfo.target_ref_filed)
             callerList = self.callerResultMap.get(key)
             if callerList != None :
                 callerList.append(CallerInfo.toResultJsonMap(callerInfo))

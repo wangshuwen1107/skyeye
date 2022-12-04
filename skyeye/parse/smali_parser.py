@@ -1,7 +1,11 @@
 # coding=UTF-8
+from operator import methodcaller
+from turtle import st
 from skyeye.dto import *
 from skyeye.result_wirter import ResultWirter
-from .invokeline_parser import InvokeLineParser
+from .method_block_parser import InvokeLineParser
+from skyeye.utils import *
+
 
 class SmaliParser:
 
@@ -33,13 +37,15 @@ class SmaliParser:
                     continue
                     
                 # 扫描调用方法里面 执行的方法  1.执行的方法 2.成员变量赋值的方法
-                copyCallerInfo = InvokeLineParser.matchInvokeLine(matcherCallerInfo,line,scan_strategy_list)
+                copyCallerInfo = InvokeLineParser.matchMethodBlock(matcherCallerInfo,line,scan_strategy_list)
                 # TODO 匹配调用方法里面 变量，枚举，引用的常量
                 
                 if(copyCallerInfo):
                     SmaliParser.toStringScanInfo(copyCallerInfo)
-                    matcherCallerInfo.invoke_class = None
-                    matcherCallerInfo.invoke_func = None
+                    # 情况扫描信息
+                    matcherCallerInfo.target_class = None
+                    matcherCallerInfo.target_method = None
+                    matcherCallerInfo.target_ref_filed = None
                     matcherCallerInfo.invoke_num = None
                     ResultWirter.shared().addResultDto(copyCallerInfo)
             # 解析调用方法结束
@@ -59,8 +65,8 @@ class SmaliParser:
         for index,item in enumerate(calllMehotdInfoList):
             if(index != 0):
                 methodDsec += " "+item.strip().replace("/",".")
-        callerInfo.class_name = className
-        callerInfo.method_name = methodDsec.strip()
+        callerInfo.caller_class = className
+        callerInfo.caller_method = methodDsec.strip()
         return callerInfo
 
 
@@ -75,20 +81,20 @@ class SmaliParser:
     @classmethod
     def toStringScanInfo(cls,copyCallerInfo:CallerInfo)->str:
         resultLine = ''
-        if len(copyCallerInfo.invoke_func) > 0:
-            resultLine ='行数={e} {a}:{b} 调用: {c}:{d}'.format(a=copyCallerInfo.class_name,
-                                b=copyCallerInfo.method_name,
-                                c=copyCallerInfo.invoke_class,
-                                d=copyCallerInfo.invoke_func,
+        if not isEmpty(copyCallerInfo.target_method):
+            resultLine ='行数={e} {a}:{b} 调用: {c}:{d}'.format(a=copyCallerInfo.caller_class,
+                                b=copyCallerInfo.caller_method,
+                                c=copyCallerInfo.target_class,
+                                d=copyCallerInfo.target_method,
                                 e=copyCallerInfo.invoke_num)
         else:
-            resultLine ='行数={e} {a}:{b} 调用: {c}.{d}'.format(a=copyCallerInfo.class_name,
-                    b=copyCallerInfo.method_name,
-                    c=copyCallerInfo.invoke_class,
-                    d=copyCallerInfo.ref_filed,
+            resultLine ='行数={e} {a}:{b} 调用: {c}.{d}'.format(a=copyCallerInfo.caller_class,
+                    b=copyCallerInfo.caller_method,
+                    c=copyCallerInfo.target_class,
+                    d=copyCallerInfo.target_ref_filed,
                     e=copyCallerInfo.invoke_num) 
         print("😄😄😄扫描到了"+resultLine)
         
         
-        
+  
         

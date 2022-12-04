@@ -1,31 +1,30 @@
 
 class CallerInfo:
     #调用者的类名
-    class_name = ''
+    caller_class = ''
     #调用者的方法
-    method_name = ''
+    caller_method = ''
     #目标扫描类名
-    invoke_class = ''
+    target_class = ''
     #目标扫描方法
-    invoke_func = ''
+    target_method = ''
     #目标扫描的成员变量
-    ref_filed = ''
+    target_ref_filed = ''
     #执行的行数
     invoke_num = ''
 
-    
-    def __init__(self, class_name="", method_name="", invoke_class="",invoke_func="", invoke_num="",ref_filed = ""):
-        self.class_name = class_name
-        self.method_name = method_name
-        self.invoke_class = invoke_class
-        self.invoke_func = invoke_func
-        self.ref_filed = ref_filed
+    def __init__(self, caller_class="", caller_method="", target_class="",target_method="", invoke_num="",target_ref_filed = ""):
+        self.caller_class = caller_class
+        self.caller_method = caller_method
+        self.target_class = target_class
+        self.target_method = target_method
         self.invoke_num = invoke_num
+        self.target_ref_filed = target_ref_filed
     
     def toResultJsonMap(self):
         jsoMap = {}
-        jsoMap['class_name'] = self.class_name
-        jsoMap['method_name'] = self.method_name
+        jsoMap['caller_class'] = self.caller_class
+        jsoMap['caller_method'] = self.caller_method
         jsoMap['invoke_num'] = self.invoke_num
         return jsoMap
     
