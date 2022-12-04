@@ -38,8 +38,11 @@ class ResultWirter:
 
     def groupCaller(self):
         for callerInfo in self.callerInfoList:
-            key ='{a}:{b}'.format(a=callerInfo.invoke_class,
-                                  b=callerInfo.invoke_func)
+            key = ''
+            if(len(callerInfo.invoke_func)>0):
+                key ='{a}:{b}'.format(a=callerInfo.invoke_class, b=callerInfo.invoke_func)
+            elif(len(callerInfo.ref_filed)>0):
+                key ='{a}.{b}'.format(a=callerInfo.invoke_class, b=callerInfo.ref_filed)
             callerList = self.callerResultMap.get(key)
             if callerList != None :
                 callerList.append(CallerInfo.toResultJsonMap(callerInfo))
