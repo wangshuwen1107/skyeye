@@ -8,27 +8,19 @@ skyeye是一款基于python3实现的扫描APK中代码引用的CLI工具
 #### skyeye安装
     pip3 install skyeye
 
-#### pythonCli环境配置
--  zsh
-在.zshrc中增加以下配置 export PATH="~/Library/Python/3.8/bin:$PATH"
-- bash
-在.bash_profile中增加以下配置 export PATH="~/Library/Python/3.8/bin:$PATH"
-
-
 ### 使用
 #### 扫描APK中代码引用
 
-1. 创建yaml文件,格式如下
+1. 本地创建config.yaml文件,格式如下
 
 ```yaml
  - className: "com.xx.xx.yourClassName1"
    methodName: "yourMethodName1"
  - className: "com.xx.xx.yourClassName2"
-   methodName: "yourMethodName2"
+   filedName: "yourMethodName2"
 ```
-如果methodName不填写,会扫描className所有方法的外部的引用情况，目前仅支持：
-- 扫描特定类的所有方法外部的引用
-- 扫描特定类的特定方法的外部引用
+如果methodName不填写,会扫描className所有方法的外部的引用情况
+如果filedName不填写,会扫描className所有变量的外部的引用情况
 
 2. 扫描
 
@@ -42,12 +34,19 @@ skyeye是一款基于python3实现的扫描APK中代码引用的CLI工具
 3. 输出结果，格式如下
 ```json
 {
-    "com.test.Class:testMethod(Landroid.content.Context;)Ljava.lang.String;": [
+    "cn.Test:<init>()V": [
         {
-            "class_name": "com.test.CallerClassName",
-            "method_name": "private final CallerFuncName()V",
-            "invoke_num": " 45"
-        }   
+            "caller_class": "cn.xx.MainActivity",
+            "caller_method": "protected onCreate(Landroid.os.Bundle;)V",
+            "invoke_num": " 58"
+        }
+    ],
+    "cn.Test.staticString": [
+        {
+            "caller_class": "cn.xx.MainActivity",
+            "caller_method": "protected onCreate(Landroid.os.Bundle;)V",
+            "invoke_num": " 60"
+        }
     ]
 }
 ```
@@ -59,6 +58,9 @@ skyeye -v
 ```
 
 ### changeLog
+####  3.2.0
+- 支持静态变量&&变量扫描
+- 支持扫描类里面所有变量&&方法
 ####  3.1.0
 - 增加结果报告执行函数输出
 - 增加PyYaml的依赖
