@@ -33,12 +33,9 @@ class SmaliParser:
             if(methodBlock):
                 if(line.strip().startswith('.line')):
                     matcherCallerInfo.invoke_num = SmaliParser.parseInvokeNum(line)
-                    continue
-                    
+                    continue  
                 # 扫描调用方法里面 执行的方法  1.执行的方法 2.成员变量赋值的方法
                 copyCallerInfo = InvokeLineParser.matchMethodBlock(matcherCallerInfo,line,scan_strategy_list)
-                # TODO 匹配调用方法里面 变量，枚举，引用的常量
-                
                 if(copyCallerInfo):
                     SmaliParser.toStringScanInfo(copyCallerInfo)
                     # 情况扫描信息
