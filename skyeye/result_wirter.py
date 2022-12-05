@@ -45,6 +45,8 @@ class ResultWirter:
                 key ='{a}:{b}'.format(a=callerInfo.target_class, b=callerInfo.target_method)
             elif(not isEmpty(callerInfo.target_ref_filed)):
                 key ='{a}.{b}'.format(a=callerInfo.target_class, b=callerInfo.target_ref_filed)
+            if(isEmpty(key)):
+                continue
             callerList = self.callerResultMap.get(key)
             if callerList != None :
                 callerList.append(CallerInfo.toResultJsonMap(callerInfo))
