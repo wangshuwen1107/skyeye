@@ -18,13 +18,13 @@ class InvokeLineParser:
         if(lineStrip.startswith('invoke')):
             return InvokeLineParser.matchInvoekLine(matcherCallerInfo,lineStrip,scan_strategy_list)
         if(lineStrip.startswith('iget-object') or lineStrip.startswith('sget-object')):
-            return InvokeLineParser.matchFild(matcherCallerInfo,lineStrip,scan_strategy_list)
+            return InvokeLineParser.matchFiled(matcherCallerInfo,lineStrip,scan_strategy_list)
         else:
             return  None
 
     #解析 静态变量引用(sget-object) 变量引用(iget-object)
     @classmethod
-    def matchFild(cls,matcherCallerInfo:CallerInfo,lineStrip,scan_strategy_list=[ScanVO])->CallerInfo:
+    def matchFiled(cls,matcherCallerInfo:CallerInfo,lineStrip,scan_strategy_list=[ScanVO])->CallerInfo:
         # sget-object v1, Lcn/cheney/picker/app/Test;->staticString:Ljava/lang/String;
         classMatch = re.compile(r",{1}\s\S+;->{1}").search(lineStrip)
         if not classMatch:
@@ -42,13 +42,11 @@ class InvokeLineParser:
             targetFiled = strategy.filed_name
             if(targetClass in getClass and matcherCallerInfo.caller_class not in getClass):
                 if(targetFiled == None or len(targetFiled) == 0):
-                    # TODO 找类里面所有的 filed被该方法引用到的地方
                     matcherCallerInfo.target_class = getClass
                     matcherCallerInfo.target_ref_filed = getFiled
                     return copy.copy(matcherCallerInfo)
                 else:
                     if getFiled in targetFiled and getClass in targetClass:
-                         print ("matchFild getClass="+getClass+" getFiled="+getFiled)
                          matcherCallerInfo.target_class = getClass
                          matcherCallerInfo.target_ref_filed = getFiled
                          return copy.copy(matcherCallerInfo)   
