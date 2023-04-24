@@ -5,5 +5,4 @@ build/
 test/
 out/
 result.json
-
-
+jd-gui.cfg

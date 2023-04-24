@@ -41,15 +41,15 @@ def decompiling(apkPath:str,resultDir):
     
 def openGUI(openDirOrFilePath):
     firstClassFilePath = ""
-    if(isEmpty(openDirOrFilePath)):
-        return
-    if not os.path.exists(openDirOrFilePath):
+    # 指定了打开文件&&文件不存在
+    if not isEmpty(openDirOrFilePath) and not os.path.exists(openDirOrFilePath):
         print("❌文件不存在") 
         return
-    if os.path.isfile(openDirOrFilePath) and not openDirOrFilePath.endswith(".class"):
-        print("❌文件不是.class") 
-        return
-    if os.path.isdir(openDirOrFilePath):
+    # if os.path.isfile(openDirOrFilePath) and not openDirOrFilePath.endswith(".class"):
+    #     print("❌文件不是.class") 
+    #     return
+    if not isEmpty(openDirOrFilePath):
+      if os.path.isdir(openDirOrFilePath):
         walk = os.walk(openDirOrFilePath)
         for root,dir_list,file_list in walk:
             if root == openDirOrFilePath:
@@ -57,7 +57,7 @@ def openGUI(openDirOrFilePath):
             for file_name in file_list:
                 if file_name.endswith(".class") and  len(firstClassFilePath)==0:
                     firstClassFilePath = os.path.join(root,file_name)
-    else:
+      else:
         firstClassFilePath = openDirOrFilePath              
     current_file_dir = os.path.dirname(__file__)
     guiPath=  os.path.join(current_file_dir,'config/jd-gui-1.6.6.jar')
