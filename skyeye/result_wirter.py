@@ -34,7 +34,7 @@ class ResultWirter:
         realOutputPath = os.path.join(os.getcwd(),"result.json")
         if(resultDir):
             realOutputPath = os.path.join(os.getcwd(),resultDir,"result.json")
-        with open(realOutputPath,"w+") as file:
+        with open(realOutputPath,"w") as file:
              file.writelines(jsonStr)
         return realOutputPath   
 
