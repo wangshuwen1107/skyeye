@@ -84,8 +84,9 @@ def dex2Jar(dexPath):
     dexDir = os.path.dirname(dexPath)
     jarPath = os.path.join(dexDir,dexName+".jar")
     dex2JarShPath=  os.path.join(current_file_dir,'config/dex-tools-2.1/d2j-dex2jar.sh')
-    d2jInvokeShPath=  os.path.join(current_file_dir,'config/dex-tools-2.1/d2j_invoke.sh')
-    command ="sudo chmod +x "+d2jInvokeShPath+"&& sh "+ dex2JarShPath+" "+dexPath+" -o "+jarPath+" --force"     
+    # d2jInvokeShPath=  os.path.join(current_file_dir,'config/dex-tools-2.1/d2j_invoke.sh')
+    # command ="sudo chmod +x "+d2jInvokeShPath+"&& sh "+ dex2JarShPath+" "+dexPath+" -o "+jarPath+" --force"
+    command ="sh "+ dex2JarShPath+" "+dexPath+" -o "+jarPath+" --force"     
     commandResult = os.popen(command).readlines()      
     return jarPath
     
