@@ -12,8 +12,6 @@ brew install python3
 pip3 install skyeye
 ```
 
-在侧边### 使用
-
 #### 扫描APK中代码引用
 
 1. 本地创建config.yaml文件,格式如下
