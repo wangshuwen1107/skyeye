@@ -12,7 +12,7 @@ brew install python3
 pip3 install skyeye
 ```
 
-### 使用
+在侧边### 使用
 
 #### 扫描APK中代码引用
 
@@ -20,13 +20,14 @@ pip3 install skyeye
 
 ```yaml
 - className: "com.xx.xx.yourClassName1"
-   methodName: "yourMethodName1"
- - className: "com.xx.xx.yourClassName2"
-   filedName: "yourMethodName2"
+  methodName: "methodName"
+- className: "com.xx.xx.yourClassName2"
+  filedName: "filedName"
 ```
 
-如果methodName不填写,会扫描className所有方法的外部的引用情况
-如果filedName不填写,会扫描className所有变量的外部的引用情况
+* 如果methodName,filedName不填写,会扫描className所有方法的外部和变量的引用情况
+* 方法和字段名都是模糊匹配，例如methodName(x,x)只需要填写methodName即可
+
 
 2. 扫描
 
@@ -58,13 +59,24 @@ skyeye scan
 }
 ```
 
-#### 反编译&&GUI打开
+#### 反编译
 
 ```bash
 skyeye dec
       -i , --input       输入扫描的APK路径
       -o , --output      输出结果的文件夹路径 【可选，默认运行文件夹路径】
 ```
+ <img src="./media/dec.jpg"/>
+
+
+#### GUI打开源码
+
+```bash
+skyeye jd
+      -i , --input   目标class文件路径 或者 class文件夹路径
+```
+ <img src="./media/jd.jpg"/>
+
 
 #### 查看当前版本
 
@@ -89,7 +101,7 @@ skyeye -v
 - 增加结果报告执行函数输出
 - 增加PyYaml的依赖
 
-#### 3.0.0
+#### 3.0.0在侧边
 
 - 扫描特定类的所有方法外部的引用
 - 扫描特定类的特定方法的外部引用
