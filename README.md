@@ -23,7 +23,7 @@ pip3 install skyeye
   filedName: "filedName"
 ```
 
-* 如果methodName,filedName不填写,会扫描className所有方法的外部和变量的引用情况
+* 如果methodName,filedName不填写,会扫描className所有方法和变量的外部引用情况
 * 方法和字段名都是模糊匹配，例如methodName(x,x)只需要填写methodName即可
 
 
