@@ -1,10 +1,8 @@
 # coding=UTF-8
-from operator import methodcaller
 from skyeye.dto import *
 from skyeye.result_wirter import ResultWirter
 from .method_block_parser import InvokeLineParser
 from skyeye.utils import *
-
 
 class SmaliParser:
 

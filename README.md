@@ -1,17 +1,18 @@
+```
 ### 安装
 
 #### python3环境安装
-
 ```
+
 brew install python3
-```
 
+```
 #### skyeye安装
-
 ```
+
 pip3 install skyeye
-```
 
+```
 #### 扫描APK中代码引用
 
 1. 本地创建config.yaml文件,格式如下
@@ -25,7 +26,6 @@ pip3 install skyeye
 
 * 如果methodName,filedName不填写,会扫描className所有方法和变量的外部引用情况
 * 方法和字段名都是模糊匹配，例如methodName(x,x)只需要填写methodName即可
-
 
 2. 扫描
 
@@ -64,8 +64,8 @@ skyeye dec
       -i , --input       输入扫描的APK路径
       -o , --output      输出结果的文件夹路径 【可选，默认运行文件夹路径】
 ```
- <img src="./media/dec.jpg"/>
 
+<img src="./media/dec.jpg"/>
 
 #### GUI打开源码
 
@@ -73,8 +73,8 @@ skyeye dec
 skyeye jd
       -i , --input   目标class文件路径 或者 class文件夹路径
 ```
- <img src="./media/jd.jpg"/>
 
+<img src="./media/jd.jpg"/>
 
 #### 查看当前版本
 
@@ -84,6 +84,10 @@ skyeye -v
 ```
 
 ### changeLog
+
+#### 3.6.0
+
+- 支持扫描子父类的继承方法和字段
 
 #### 3.4.2
 
@@ -105,6 +109,4 @@ skyeye -v
 - 扫描特定类的特定方法的外部引用
 - 支持图片的裁剪选择
 
-```
 
-```
