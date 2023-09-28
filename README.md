@@ -1,18 +1,20 @@
-```
+
+
+
 ### 安装
 
 #### python3环境安装
-```
 
 brew install python3
 
-```
+
 #### skyeye安装
-```
+
 
 pip3 install skyeye
 
-```
+
+
 #### 扫描APK中代码引用
 
 1. 本地创建config.yaml文件,格式如下
@@ -26,6 +28,7 @@ pip3 install skyeye
 
 * 如果methodName,filedName不填写,会扫描className所有方法和变量的外部引用情况
 * 方法和字段名都是模糊匹配，例如methodName(x,x)只需要填写methodName即可
+* 扫描父类的字段和方法，其子类的也会被扫描
 
 2. 扫描
 
