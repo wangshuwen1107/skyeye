@@ -4,16 +4,17 @@
 ### 安装
 
 #### python3环境安装
+```bash
+1.安装pipx包管理器： brew install pipx
+2.将~/.local/bin加入到环境中: pipx ensurepath
 
-brew install python3
-
+```
 
 #### skyeye安装
+```bash
+pipx install skyeye
 
-
-pip3 install skyeye
-
-
+```
 
 #### 扫描APK中代码引用
 
